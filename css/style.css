@@ -1,0 +1,61 @@
+
+body
+{
+
+}
+
+#main_page
+{
+    /*width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    */
+}
+
+#top_page
+{
+    /*height: 50px;
+    border: 1px solid black;
+    background-image:url('images/logo-supelec.sty');*/
+    margin-top: 50px;
+    text-align:center;
+}
+
+
+
+#middle_page
+{
+    margin-top: 50px;
+    margin-bottom: 100px;
+    text-align:center;
+}
+
+#middle_page div
+{
+    margin: auto;
+}
+
+#middle_page table
+{
+    /*border-collapse: collapse;*/
+    /*width: 100%;*/
+    border: 1px solid black;
+    margin: auto;
+}
+
+#middle_page table td
+{
+    padding: 0px;
+    vertical-align: top;
+    width: 80px;
+    text-align:center;
+}
+
+
+footer
+{
+    height: 30px;
+    text-align: right;
+    border:0px solid black; 
+    clear:both;
+}
