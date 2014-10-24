@@ -1,7 +1,7 @@
 <?php
     // le plateau doit etre mis dans le repertoire livraison avec le nom board.sol
-    $nameLivraison = "Livraison_2VJ";
-    $nameBoard = "petit1"; // le nom qui apparaitra sur la page
+    $nameLivraison = "Livraison_NU6Z";
+    $nameBoard = "board 1"; // le nom qui apparaitra sur la page
     
     // connexion à la base
     try {
@@ -69,7 +69,7 @@
         
         
         // Calculer le score
-        $score = exec("java -jar scripts/checkSol.jar files/$nameLivraison/board.sol $coup | grep score | sed 's/score : //'");
+        $score = exec("java -jar scripts/checkSol.jar files/$nameLivraison/board.sol \"$coup\" | grep score | sed 's/score : //'");
         //print_r($score."\n");
 
         // Ajouter la soumission
