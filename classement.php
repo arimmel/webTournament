@@ -1,6 +1,63 @@
 
 <?php
 
+
+function generateGraph($labels,$values,$canName) {
+
+    echo "<div style=\"width: 50%; margin-top: 100px\">\n";
+    echo "<canvas id=\"$canName\" height=\"300\" width=\"600\" align=\"center\"></canvas>\n";
+    echo "</div>\n";
+
+    echo "<script>\n";
+    echo "var barChartData = {\n\n";
+
+    echo "labels : [";
+        //insert labels
+        foreach($labels as $key => &$label) {
+            end($labels);
+            if ($key === key($labels)) {
+                echo "\"".$label."\"],\n";
+            }else{
+                echo "\"".$label."\", ";
+            }
+        }
+    echo "datasets : [\n";
+    echo "   {\n";
+    echo "        fillColor : \"rgba(151,187,205,0.5)\",\n";
+    echo "        strokeColor : \"rgba(151,187,205,0.8)\",\n";
+    echo "        highlightFill : \"rgba(151,187,205,0.75)\",\n";
+    echo "        highlightStroke : \"rgba(151,187,205,1)\",\n";
+    echo "        data : [";
+
+    //insert values
+    foreach($values as $key => &$value) {
+            end($values);
+            if ($key === key($values)) {
+                echo $value."],\n";
+            }else{
+                echo $value.", ";
+            }
+    }
+    echo "}]}\n";
+
+    echo "var ctx = document.getElementById(\"$canName\").getContext(\"2d\");\n";
+    echo "window.myBar = new Chart(ctx).Bar(barChartData, {\n";
+    echo "    responsive : true\n";
+    echo "});\n";
+    echo "</script>\n";
+}
+
+function getScore($IDbin, $IDsol,$bdd) {
+    $reponseScore = $bdd->query("SELECT score FROM Soumission WHERE IDbin=".$IDbin." AND IDsol=".$IDsol." ORDER BY score ASC");
+    $donneesScore = $reponseScore->fetch();
+    if ($donneesScore['score']) {
+        $score = $donneesScore['score'];
+    } else {
+        $score = 0;
+    }
+    return $score;
+}
+
 try {
     $bdd = new PDO('mysql:host=localhost;dbname=solitaire', 'solitaire', 'sol');
 } catch(Exception $e) {
@@ -39,6 +96,7 @@ try {
     </thead>
 
     <tbody>
+
 <?php 
 
     
@@ -55,11 +113,10 @@ try {
 
         $sumScore = 0;
         foreach ($listID as &$value) {
-            $reponseScore = $bdd->query("SELECT score FROM Soumission WHERE IDbin=".$donnees['ID']." AND IDsol=".$value." ORDER BY score DESC");
-            $donneesScore = $reponseScore->fetch();
-            $sumScore += $donneesScore['score'];
+            $score = getScore($donnees['ID'],$value,$bdd);
+            $sumScore += $score;
             echo "<td>\n";
-            echo $donneesScore['score'];
+            echo $score;
             echo "</td>\n";
         }
         echo "<td>\n";
@@ -76,3 +133,20 @@ try {
 
 </table>
 
+
+
+
+<?php 
+    //generateGraph(["a","b"],[2,3],"test");
+    foreach($listID as &$IDsol) {
+        $listName = array();
+        $listScore = array();
+        $reponse = $bdd->query("SELECT * FROM Binome");
+        while ($donnees = $reponse->fetch()) {
+           array_push($listName,$donnees['Binome1']." - ".$donnees['Binome2']); 
+           $score = getScore($donnees['ID'],$IDsol,$bdd);
+           array_push($listScore,$score);
+        }
+        generateGraph($listName,$listScore,"Board".$IDsol);
+    }
+?>

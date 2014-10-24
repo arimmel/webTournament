@@ -10,9 +10,11 @@
         <script src="js/jquery.tablesorter.js"></script> 
         <script>
             $(function() {
-                $("#rank_point").tablesorter();
+                $("#rank_point").tablesorter({
+                    sortList: [[6,0]]
+                });
             });
-</script>
+        </script>
     </head>
 
     <body>
