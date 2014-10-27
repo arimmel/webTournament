@@ -53,7 +53,9 @@ function getScore($IDbin, $IDsol,$bdd) {
     if ($donneesScore['score']) {
         $score = $donneesScore['score'];
     } else {
-        $score = 0;
+        $reponseScore = $bdd->query("SELECT score FROM Soumission WHERE IDsol=".$IDsol." ORDER BY score DESC");
+        $donneesScore = $reponseScore->fetch();
+        $score = $donneesScore['score'] + 10;
     }
     return $score;
 }
