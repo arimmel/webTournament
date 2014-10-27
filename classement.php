@@ -79,7 +79,7 @@ try {
 <?php 
     // get every board entered in the table
     $listID = array();
-    $reponse = $bdd->query('SELECT * FROM Board');
+    $reponse = $bdd->query('SELECT * FROM Board ORDER BY ID ASC');
     while ($donnees = $reponse->fetch()) {
         array_push($listID,$donnees['ID']);
         echo "<th style=\"border: 1px solid black\">\n";
@@ -138,6 +138,7 @@ try {
 
 <?php 
     //generateGraph(["a","b"],[2,3],"test");
+    arsort($listID);
     foreach($listID as &$IDsol) {
         $listName = array();
         $listScore = array();
