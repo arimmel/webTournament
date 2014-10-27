@@ -47,6 +47,36 @@ function generateGraph($labels,$values,$canName) {
     echo "</script>\n";
 }
 
+function getRank($IDbin,$IDsol,$bdd) {
+
+    // get all the scores
+    $reponse = $bdd->query("SELECT * FROM Binome");
+    $listScore = array();
+    while ($donnees = $reponse->fetch()) {
+        $listScore[$donnees['ID']] = getScore($donnees['ID'],$IDsol,$bdd);
+    }
+    $listIDscore = $listScore;
+    sort($listScore);
+
+    // create the rank in function of the score array
+    $rank=1;
+    $listScoreRank = array();
+    foreach($listScore as $score) {
+        if (!array_key_exists($score,$listScoreRank)) {
+            $listScoreRank[$score] = $rank;
+        }
+        $rank++;
+    }
+
+    // create the rank in function of the ID array
+    $listIDrank = array();
+    foreach($listIDscore as $id=>$score) {
+        $listIDrank[$id] = $listScoreRank[$score];
+    }
+
+    return $listIDrank[$IDbin];
+}
+
 function getScore($IDbin, $IDsol,$bdd) {
     $reponseScore = $bdd->query("SELECT score FROM Soumission WHERE IDbin=".$IDbin." AND IDsol=".$IDsol." ORDER BY score ASC");
     $donneesScore = $reponseScore->fetch();
@@ -87,12 +117,18 @@ try {
         echo "<th style=\"border: 1px solid black\">\n";
         echo $donnees['Name']."\n";
         echo "</th>\n";
+        echo "<th style=\"border: 1px solid black\">\n";
+        echo "rank\n";
+        echo "</th>\n";
     }
     $reponse->closeCursor();
 ?>
 
         <th style="border: 1px solid black">
         <b> Total </b>
+        </th>
+        <th style="border: 1px solid black">
+        <b> Av Rank </b>
         </th>
     </tr>
     </thead>
@@ -114,15 +150,24 @@ try {
         echo "</td>\n";
 
         $sumScore = 0;
+        $sumRank = 0;
         foreach ($listID as &$value) {
+            $rank = getRank($donnees['ID'],$value,$bdd);
             $score = getScore($donnees['ID'],$value,$bdd);
             $sumScore += $score;
+            $sumRank += $rank;
             echo "<td>\n";
             echo $score;
+            echo "</td>\n";
+            echo "<td>\n";
+            echo $rank;
             echo "</td>\n";
         }
         echo "<td>\n";
         echo "<b> ".$sumScore." </b>\n";
+        echo "</td>\n";
+        echo "<td>\n";
+        echo "<b> ".$sumRank/sizeof($listID)." </b>\n";
         echo "</td>\n";
         echo "</tr>\n";
    }
@@ -152,4 +197,5 @@ try {
         }
         generateGraph($listName,$listScore,"Board".$IDsol);
     }
+
 ?>
