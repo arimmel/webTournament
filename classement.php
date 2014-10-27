@@ -90,6 +90,14 @@ function getScore($IDbin, $IDsol,$bdd) {
     return $score;
 }
 
+function getNbCol($bdd) {
+    $reponse = $bdd->query("SELECT * FROM Board");
+    $donnees= $reponse->fetchAll();
+    $nbCol = 2 + 2 + 2*sizeof($donnees);
+    print($nbCol."\n");
+
+}
+
 try {
     $bdd = new PDO('mysql:host=localhost;dbname=solitaire', 'solitaire', 'sol');
 } catch(Exception $e) {
@@ -97,6 +105,15 @@ try {
 }
   
 ?>
+
+<script>
+    $(function() {
+        $("#rank_point").tablesorter({
+            sortList: [[ <?php echo getNbCol($bdd)-1; ?> ,0]]
+        });
+    });
+</script>
+
 
 <table id="rank_point" class="tablesorter">
     <thead>
@@ -125,7 +142,7 @@ try {
 ?>
 
         <th style="border: 1px solid black">
-        <b> Total </b>
+        Total
         </th>
         <th style="border: 1px solid black">
         <b> Av Rank </b>
@@ -164,7 +181,7 @@ try {
             echo "</td>\n";
         }
         echo "<td>\n";
-        echo "<b> ".$sumScore." </b>\n";
+        echo $sumScore."\n";
         echo "</td>\n";
         echo "<td>\n";
         echo "<b> ".$sumRank/sizeof($listID)." </b>\n";
