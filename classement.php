@@ -201,7 +201,6 @@ try {
 
 
 <?php 
-    //generateGraph(["a","b"],[2,3],"test");
     arsort($listID);
     foreach($listID as &$IDsol) {
         $listName = array();
